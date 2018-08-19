@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
+import com.app.models.IplResponce;
+import com.app.models.Player;
 import com.app.models.Team;
 import com.google.gson.Gson;
 
@@ -32,9 +34,10 @@ public class RegisterTeam {
 	
 		HttpEntity entity = new HttpEntity(json, headers);
 	
-		String url="http://localhost:8080/reg/iplscore/reg";
+		String url="http://localhost:8080/DemoRest/iplscore/reg";
 		
 		ResponseEntity<String> responseEntity=restTemplate.exchange(url, HttpMethod.POST, entity,String.class);
+		
 		String body = responseEntity.getBody();
 		System.out.println(body);
 		
@@ -43,48 +46,8 @@ public class RegisterTeam {
 		System.out.println("status="+fromJson.getStatus());
 		model.addAttribute("status","Congratulation Your Eligible ");
 		
-		return "index";
+		return "addplayer";
 	}
 	
-/*	public static void main(String[] args) {
-		RegisterTeam registerTeam=new RegisterTeam();
-		registerTeam.reg();
-		
-		
-
 	}
-			
-	private void reg() {
-		// TODO Auto-generated method stub
-
-			Team team=new Team();
-			team.setName("asd");
-			team.setMatchtotal(300);
-			team.setMatchWon(156);
-			team.setMatchLose(173);
-	
-			System.out.println("Entering to Register");
-			
-			Gson gson=new Gson();
-			
-			RestTemplate restTemplate=new RestTemplate();
-			HttpHeaders headers=new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			
-			String json = gson.toJson(team);
-			
-			HttpEntity entity=new HttpEntity(json,headers);
-			
-			String url="http://localhost:8080/DemoRest/iplscore/reg";
-			
-			ResponseEntity<String> responseEntity=restTemplate.exchange(url, HttpMethod.POST, entity,String.class);
-			String body = responseEntity.getBody();
-			System.out.println(body);
-			
-			
-			Team fromJson = gson.fromJson(body,Team.class);
-			System.out.println("status="+fromJson.getStatus());
-		}
-*/	
-}
 
