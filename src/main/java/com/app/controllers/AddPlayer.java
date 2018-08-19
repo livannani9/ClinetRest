@@ -1,9 +1,5 @@
 package com.app.controllers;
 
-import java.net.URI;
-
-import javax.swing.text.html.FormSubmitEvent.MethodType;
-
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.app.models.IplResponce;
@@ -32,16 +29,28 @@ public class AddPlayer {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		String jsonPlayer = gson.toJson(player);
 		HttpEntity entity = new HttpEntity(jsonPlayer, headers);
+		
+		String body="";
+		try {
+			ResponseEntity<String> AddPlayerResponse = template.exchange(url, HttpMethod.POST, entity, String.class);
+			System.out.println("Success code is: " + AddPlayerResponse.getStatusCodeValue());
+			body = AddPlayerResponse.getBody();
+			System.out.println("Body=" + body);
+			
+		} catch (HttpStatusCodeException e) {
 
-		ResponseEntity<String> AddPlayerResponse = template.exchange(url, HttpMethod.POST, entity, String.class);
-		System.out.println("Success code is: " + AddPlayerResponse.getStatusCodeValue());
-		String body = AddPlayerResponse.getBody();
-		System.out.println("Body=" + body);
+			System.out.println("status code is : " + e.getRawStatusCode());
+			body = e.getResponseBodyAsString();
+			System.out.println("failed!! The response is : " + body);
+		}
 
 		IplResponce iplResponceJson = gson.fromJson(body, IplResponce.class);
+
+		
+		
 		if (iplResponceJson.getErrorCode().equals("000")) {
 			System.out.println("Player Register SuccessFully");
-
+	
 			model.addAttribute("msg", "Congratulation Player Register...");
 			return "addplayer";
 		} else if (iplResponceJson.getErrorCode().equals("121")) {
@@ -87,11 +96,19 @@ public class AddPlayer {
 
 		HttpEntity entity = new HttpEntity(playerJson, headers);
 
-		ResponseEntity<String> exchange = template.exchange(url, HttpMethod.POST, entity, String.class);
-		int statusCodeValue = exchange.getStatusCodeValue();
-		String body = exchange.getBody();
-		System.out.println("Status Code value = " + statusCodeValue);
-		System.out.println("Body=" + body);
+		String body="";
+		try {
+			ResponseEntity<String> AddPlayerResponse = template.exchange(url, HttpMethod.POST, entity, String.class);
+			System.out.println("Success code is: " + AddPlayerResponse.getStatusCodeValue());
+			body = AddPlayerResponse.getBody();
+			System.out.println("Body=" + body);
+			
+		} catch (HttpStatusCodeException e) {
+
+			System.out.println("status code is : " + e.getRawStatusCode());
+			body = e.getResponseBodyAsString();
+			System.out.println("failed!! The response is : " + body);
+		}
 
 		IplResponce iplResponce = gson.fromJson(body, IplResponce.class);
 
